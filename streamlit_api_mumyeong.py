@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="🧠 Mumyeong GPT (API)", layout="centered")
+st.set_page_config(page_title="🧠 Mumyeong GPT (API Tested)", layout="centered")
 
 LOG_FILE = "api_conversation_log.json"
 if os.path.exists(LOG_FILE):
@@ -34,7 +34,7 @@ def get_delay():
     st.session_state.last_input_time = now
     return delay
 
-def call_huggingface_api(prompt, token, model="google/flan-t5-base"):
+def call_huggingface_api(prompt, token, model="bigscience/bloom-560m"):
     headers = {"Authorization": f"Bearer {token}"}
     url = f"https://api-inference.huggingface.co/models/{model}"
     payload = {
@@ -73,7 +73,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🧠 Mumyeong GPT (API 연결 버전)")
+st.title("🧠 Mumyeong GPT (Stable API Version)")
 
 token = st.text_input("🔐 HuggingFace API Token (hf_xxxx)", type="password")
 user_input = st.text_input("💬 당신의 말", key="user_input")
