@@ -5,9 +5,9 @@ import requests
 from datetime import datetime
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="🧠 Mumyeong GPT (API Tested)", layout="centered")
+st.set_page_config(page_title="🧠 Mumyeong GPT (falcon-rw-1b)", layout="centered")
 
-LOG_FILE = "api_conversation_log.json"
+LOG_FILE = "falconrw_conversation_log.json"
 if os.path.exists(LOG_FILE):
     with open(LOG_FILE, "r", encoding="utf-8") as f:
         session_log = json.load(f)
@@ -34,14 +34,14 @@ def get_delay():
     st.session_state.last_input_time = now
     return delay
 
-def call_huggingface_api(prompt, token, model="bigscience/bloom-560m"):
+def call_huggingface_api(prompt, token, model="tiiuae/falcon-rw-1b"):
     headers = {"Authorization": f"Bearer {token}"}
     url = f"https://api-inference.huggingface.co/models/{model}"
     payload = {
         "inputs": prompt,
         "parameters": {
             "temperature": 0.7,
-            "max_new_tokens": 200
+            "max_new_tokens": 150
         }
     }
     response = requests.post(url, headers=headers, json=payload)
@@ -73,7 +73,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🧠 Mumyeong GPT (Stable API Version)")
+st.title("🧠 Mumyeong GPT (API: falcon-rw-1b)")
 
 token = st.text_input("🔐 HuggingFace API Token (hf_xxxx)", type="password")
 user_input = st.text_input("💬 당신의 말", key="user_input")
@@ -88,7 +88,7 @@ if token and user_input:
     else:
         st.markdown(f"<div class='dot-anim' style='color:{color}'>● ● ●</div>", unsafe_allow_html=True)
 
-    with st.spinner("🤖 HuggingFace GPT 응답 생성 중..."):
+    with st.spinner("🤖 GPT 응답 생성 중..."):
         result = call_huggingface_api(user_input, token).strip()
         st.success(result)
 
@@ -112,4 +112,4 @@ if session_log:
     plt.xticks(rotation=45)
     st.pyplot(fig)
 
-    st.download_button("⬇️ 대화 기록 다운로드", data=json.dumps(session_log, ensure_ascii=False, indent=2), file_name="api_conversation_log.json", mime="application/json")
+    st.download_button("⬇️ 대화 기록 다운로드", data=json.dumps(session_log, ensure_ascii=False, indent=2), file_name="falconrw_conversation_log.json", mime="application/json")
